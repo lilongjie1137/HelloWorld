@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="/manager/xform.xsl" ?>
+<status>
+	<jvm>
+		<memory free='46575480' total='79167488' max='922746880' />
+		<memorypool name='PS Eden Space' type='Heap memory'
+			usageInit='16777216' usageCommitted='33554432' usageMax='340787200'
+			usageUsed='18555768' />
+		<memorypool name='PS Old Gen' type='Heap memory' usageInit='42991616'
+			usageCommitted='42991616' usageMax='692060160' usageUsed='11447504' />
+		<memorypool name='PS Survivor Space' type='Heap memory'
+			usageInit='2621440' usageCommitted='2621440' usageMax='2621440'
+			usageUsed='2588736' />
+		<memorypool name='Code Cache' type='Non-heap memory'
+			usageInit='2555904' usageCommitted='2555904' usageMax='50331648'
+			usageUsed='1323712' />
+		<memorypool name='PS Perm Gen' type='Non-heap memory'
+			usageInit='22020096' usageCommitted='22020096' usageMax='174063616'
+			usageUsed='18230832' />
+	</jvm>
+	<connector name='"ajp-nio-8009"'>
+		<threadInfo maxThreads="200" currentThreadCount="10"
+			currentThreadsBusy="0" />
+		<requestInfo maxTime="0" processingTime="0" requestCount="0"
+			errorCount="0" bytesReceived="0" bytesSent="0" />
+		<workers></workers>
+	</connector>
+	<connector name='"http-nio-8080"'>
+		<threadInfo maxThreads="200" currentThreadCount="10"
+			currentThreadsBusy="1" />
+		<requestInfo maxTime="119" processingTime="211"
+			requestCount="16" errorCount="1" bytesReceived="0" bytesSent="67170" />
+		<workers>
+			<worker stage="S" requestProcessingTime="3" requestBytesSent="0"
+				requestBytesReceived="0" remoteAddr="192.168.130.128" virtualHost="192.168.130.130"
+				method="GET" currentUri="/manager/status" currentQueryString="XML=true"
+				protocol="HTTP/1.1" />
+		</workers>
+	</connector>
+</status>
