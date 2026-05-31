@@ -1,0 +1,32 @@
+syntax = "v1"
+
+info (
+	title:   "cashier-api"
+	desc:    "结账 / 折扣 / 收款 / 清台 / 班次汇总"
+	version: "v1"
+)
+
+type (
+	CheckoutReq {
+		OrderId        int64  `json:"orderId"`
+		PayMethod      string `json:"payMethod"`
+		DiscountAmount string `json:"discountAmount,optional"`
+		ReceivedAmount string `json:"receivedAmount"`
+	}
+	CheckoutResp {
+		BillId        int64  `json:"billId"`
+		BillNo        string `json:"billNo"`
+		PayableAmount string `json:"payableAmount"`
+		ChangeAmount  string `json:"changeAmount"`
+	}
+)
+
+@server (
+	jwt:    Auth
+	prefix: /api/v1
+)
+service cashier-api {
+	@handler Checkout
+	post /bills/checkout (CheckoutReq) returns (CheckoutResp)
+}
+

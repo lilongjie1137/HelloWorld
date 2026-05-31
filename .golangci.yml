@@ -1,0 +1,26 @@
+# golangci-lint 配置（v1.x）。go-zero 生成代码已较规范，这里只开启稳健的核心 linter。
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck      # 未处理的错误
+    - govet         # go vet
+    - ineffassign   # 无效赋值
+    - staticcheck   # 静态分析
+    - unused        # 未使用符号
+    - gosimple      # 可简化代码
+    - misspell      # 拼写
+    - gofmt         # 格式
+
+issues:
+  exclude-rules:
+    # 生成代码不做严格检查
+    - path: internal/(handler|types|config|svc)/
+      linters:
+        - errcheck
+        - staticcheck
+  exclude-dirs:
+    - docs
