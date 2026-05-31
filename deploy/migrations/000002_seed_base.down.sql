@@ -1,0 +1,20 @@
+-- 回滚种子数据。
+DELETE FROM dining_table WHERE tenant_id = 1;
+DELETE FROM table_area WHERE tenant_id = 1;
+DELETE FROM printer_dept WHERE printer_id IN (1, 2);
+DELETE FROM printer WHERE tenant_id = 1;
+DELETE FROM spu_store WHERE tenant_id = 1;
+DELETE FROM spu_modifier_group WHERE tenant_id = 1;
+DELETE FROM modifier_option WHERE tenant_id = 1;
+DELETE FROM modifier_group WHERE tenant_id = 1;
+DELETE FROM spu WHERE tenant_id = 1;
+DELETE FROM category WHERE tenant_id = 1;
+DELETE FROM employee_store WHERE employee_id = 1;
+DELETE FROM employee_role WHERE employee_id = 1;
+DELETE FROM employee WHERE tenant_id = 1;
+DELETE FROM role_permission WHERE role_id IN (1, 2, 3);
+DELETE FROM role WHERE tenant_id = 1;
+DELETE FROM production_dept WHERE tenant_id = 1;
+DELETE FROM store WHERE tenant_id = 1;
+DELETE FROM tenant WHERE id = 1;
+DELETE FROM permission;

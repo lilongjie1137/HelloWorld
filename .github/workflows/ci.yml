@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: build / vet / test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+          cache: true
+      - name: go mod verify
+        run: go mod verify
+      - name: vet
+        run: go vet ./...
+      - name: build
+        run: go build ./...
+      - name: test
+        run: go test -race -coverprofile=coverage.out ./...
+
+  lint:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+          cache: true
+      - uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.64.8
+
+  migrations:
+    name: db migrations (up/down)
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: catering
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -uroot -proot"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - name: wait for mysql
+        run: |
+          for i in $(seq 1 30); do
+            if mysqladmin ping -h127.0.0.1 -P3306 -uroot -proot --silent; then echo ready; break; fi
+            sleep 2
+          done
+      - name: apply up migrations
+        run: |
+          mysql -h127.0.0.1 -P3306 -uroot -proot catering < deploy/migrations/000001_init_schema.up.sql
+          mysql -h127.0.0.1 -P3306 -uroot -proot catering < deploy/migrations/000002_seed_base.up.sql
+      - name: verify schema
+        run: |
+          COUNT=$(mysql -h127.0.0.1 -P3306 -uroot -proot catering -N -e \
+            'SELECT count(*) FROM information_schema.tables WHERE table_schema="catering";')
+          echo "tables=$COUNT"; test "$COUNT" -ge 30
+      - name: apply down migrations
+        run: |
+          mysql -h127.0.0.1 -P3306 -uroot -proot catering < deploy/migrations/000002_seed_base.down.sql
+          mysql -h127.0.0.1 -P3306 -uroot -proot catering < deploy/migrations/000001_init_schema.down.sql

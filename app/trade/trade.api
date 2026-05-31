@@ -1,0 +1,57 @@
+syntax = "v1"
+
+info (
+	title:   "trade-api"
+	desc:    "桌台状态机 / 混合点单 / 计价 / 订单生命周期"
+	version: "v1"
+)
+
+type (
+	OpenTableReq {
+		TableId     int64 `json:"tableId"`
+		PeopleCount int   `json:"peopleCount"`
+	}
+	OpenTableResp {
+		OrderId int64  `json:"orderId"`
+		OrderNo string `json:"orderNo"`
+	}
+	OrderItemReq {
+		SpuId           int64   `json:"spuId"`
+		Qty             int     `json:"qty"`
+		Remark          string  `json:"remark,optional"`
+		SpecOptionId    int64   `json:"specOptionId,optional"`
+		MethodOptionIds []int64 `json:"methodOptionIds,optional"`
+		AddonOptionIds  []int64 `json:"addonOptionIds,optional"`
+	}
+	CreateOrderReq {
+		TableId int64          `json:"tableId"`
+		Items   []OrderItemReq `json:"items"`
+	}
+	CreateOrderResp {
+		OrderId     int64  `json:"orderId"`
+		OrderNo     string `json:"orderNo"`
+		TotalAmount string `json:"totalAmount"`
+	}
+	RefundItemReq {
+		Reason string `json:"reason"`
+	}
+	RefundItemResp {
+		Ok bool `json:"ok"`
+	}
+)
+
+@server (
+	jwt:    Auth
+	prefix: /api/v1
+)
+service trade-api {
+	@handler OpenTable
+	post /tables/open (OpenTableReq) returns (OpenTableResp)
+
+	@handler CreateOrder
+	post /orders (CreateOrderReq) returns (CreateOrderResp)
+
+	@handler RefundItem
+	post /orders/:id/items/:itemId/refund (RefundItemReq) returns (RefundItemResp)
+}
+

@@ -1,0 +1,46 @@
+syntax = "v1"
+
+info (
+	title:   "catalog-api"
+	desc:    "商品中心：分类/SPU/属性组(规格-做法-加料)/选项/门店适用范围"
+	version: "v1"
+)
+
+type (
+	OptionInfo {
+		Id    int64  `json:"id"`
+		Name  string `json:"name"`
+		Price string `json:"price"`
+	}
+	GroupInfo {
+		Id         int64        `json:"id"`
+		Name       string       `json:"name"`
+		GroupType  string       `json:"groupType"`
+		SelectType string       `json:"selectType"`
+		Required   bool         `json:"required"`
+		Options    []OptionInfo `json:"options"`
+	}
+	SpuInfo {
+		Id                 int64       `json:"id"`
+		Name               string      `json:"name"`
+		BasePrice          string      `json:"basePrice"`
+		ProductionDeptType string      `json:"productionDeptType"`
+		Groups             []GroupInfo `json:"groups"`
+	}
+	MenuReq {
+		StoreId int64 `form:"storeId"`
+	}
+	MenuResp {
+		List []SpuInfo `json:"list"`
+	}
+)
+
+@server (
+	jwt:    Auth
+	prefix: /api/v1
+)
+service catalog-api {
+	@handler StoreMenu
+	get /catalog/menu (MenuReq) returns (MenuResp)
+}
+

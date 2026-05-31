@@ -1,0 +1,62 @@
+syntax = "v1"
+
+info (
+	title:   "identity-api"
+	desc:    "租户/门店/出品部门/设备/员工/角色权限/交接班"
+	version: "v1"
+)
+
+type (
+	LoginReq {
+		LoginName string `json:"loginName"`
+		Password  string `json:"password"`
+		StoreCode string `json:"storeCode,optional"`
+	}
+	LoginResp {
+		Token       string   `json:"token"`
+		ExpireAt    int64    `json:"expireAt"`
+		EmployeeId  int64    `json:"employeeId"`
+		Name        string   `json:"name"`
+		Permissions []string `json:"permissions"`
+	}
+	StoreInfo {
+		Id      int64  `json:"id"`
+		Name    string `json:"name"`
+		Code    string `json:"code"`
+		Address string `json:"address"`
+		Status  string `json:"status"`
+	}
+	ListStoreReq {
+		Page     int `form:"page,default=1"`
+		PageSize int `form:"pageSize,default=20"`
+	}
+	ListStoreResp {
+		Total int64       `json:"total"`
+		List  []StoreInfo `json:"list"`
+	}
+	OpenShiftReq {
+		StoreId  int64  `json:"storeId"`
+		OpenCash string `json:"openCash"`
+	}
+	OpenShiftResp {
+		ShiftId int64 `json:"shiftId"`
+	}
+)
+
+service identity-api {
+	@handler Login
+	post /api/v1/auth/login (LoginReq) returns (LoginResp)
+}
+
+@server (
+	jwt:    Auth
+	prefix: /api/v1
+)
+service identity-api {
+	@handler ListStore
+	get /stores (ListStoreReq) returns (ListStoreResp)
+
+	@handler OpenShift
+	post /shifts/open (OpenShiftReq) returns (OpenShiftResp)
+}
+

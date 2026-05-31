@@ -1,0 +1,26 @@
+# Go
+/bin/
+*.exe
+*.out
+*.test
+coverage.out
+coverage.html
+vendor/
+
+# 构建产物
+/dist/
+edge-gateway
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# 本地环境/密钥（严禁入库）
+*.local.yaml
+*.env
+.env
+secrets/
+
+# 系统
+.DS_Store
